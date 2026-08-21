@@ -10,7 +10,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* Design Tokens from anthropic.DESIGN.md */
     :root {
       --color-primary-cta-bg: #141413;
       --color-primary-cta-text: #FAF9F5;
@@ -39,7 +38,7 @@
     }
     .serif { font-family: 'Noto Serif KR', Georgia, serif; }
 
-    /* Modal (Z-Index 1000) */
+    /* Modal Overlay */
     #loginModal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -61,7 +60,7 @@
       gap: 16px;
     }
 
-    /* Header (Z-Index 5) */
+    /* Header */
     header {
       height: 64px;
       border-bottom: 1px solid var(--color-neutral-light);
@@ -86,10 +85,33 @@
       font-size: 13px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    /* Main Container (Max 1600px, 24px Gutter) */
+    /* Save Toast Notification */
+    #saveToast {
+      position: fixed;
+      top: 75px;
+      right: 32px;
+      background-color: #141413;
+      color: #FAF9F5;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 9999;
+      pointer-events: none;
+      box-shadow: var(--shadow-hover);
+    }
+    #saveToast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Main Container (2-Column Grid) */
     main {
       flex: 1;
       display: grid;
@@ -161,7 +183,6 @@
     }
     label { font-size: 12px; font-weight: 400; color: var(--color-neutral-0); line-height: 15px; }
     
-    /* Inputs */
     input[type="text"], input[type="password"], textarea {
       width: 100%;
       background: var(--color-surface-primary);
@@ -178,7 +199,7 @@
     input:focus, textarea:focus { border-color: var(--color-accent-terracotta); }
     textarea { resize: vertical; }
 
-    /* Buttons (anthropic.DESIGN.md Spec) */
+    /* Buttons */
     .btn-primary {
       background-color: var(--color-primary-cta-bg);
       color: var(--color-primary-cta-text);
@@ -209,10 +230,36 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .btn-secondary:hover { 
       background-color: var(--color-surface-tertiary);
       border-color: var(--color-neutral-medium);
+      box-shadow: var(--shadow-hover);
+    }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-save {
+      background-color: #FAF9F5;
+      color: var(--color-accent-terracotta);
+      border: 1px solid var(--color-accent-terracotta);
+      border-radius: 8px;
+      padding: 8px 14px;
+      height: 36px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-save:hover {
+      background-color: var(--color-surface-tertiary);
       box-shadow: var(--shadow-hover);
     }
 
@@ -230,7 +277,7 @@
     }
     .btn-danger:hover { background-color: var(--color-accent-blush); }
 
-    /* Chat Messages */
+    /* Chat Area */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -256,7 +303,7 @@
       gap: 8px;
     }
 
-    /* Right Preview Panel */
+    /* Right Preview Screen */
     .preview-panel {
       background: var(--color-surface-primary);
       border: 1px solid var(--color-neutral-light);
@@ -308,7 +355,10 @@
 </head>
 <body>
 
-  <!-- 1. 간이 로그인 모달 -->
+  <!-- 저장 토스트 -->
+  <div id="saveToast">💾 작업 내용이 안전하게 저장되었습니다!</div>
+
+  <!-- 간이 로그인 모달 -->
   <div id="loginModal">
     <div class="modal-card">
       <h2 class="serif" style="font-size: 20px; font-weight: 600;">👤 학생 로그인 / 등록</h2>
@@ -331,15 +381,16 @@
   <header>
     <div style="display: flex; align-items: center; gap: 12px;">
       <h1 class="serif" style="font-size: 20px; font-weight: 600;">AI 웹앱 개발 수행평가 빌더</h1>
-      <span class="badge">기획 ➔ 프로토타입 ➔ 버전 복원</span>
+      <span class="badge">수행평가 실습용</span>
     </div>
     <div class="user-info">
-      <span id="currentUserDisplay" style="font-weight: 500;">로그인 필요</span>
+      <button class="btn-save" onclick="manualSave()">💾 현재 작업 저장</button>
+      <span id="currentUserDisplay" style="font-weight: 500; margin-left: 4px;">로그인 필요</span>
       <button class="btn-secondary" onclick="logout()">로그아웃</button>
     </div>
   </header>
 
-  <!-- Main View -->
+  <!-- Main Grid -->
   <main>
     <section class="left-panel">
       <nav class="tab-bar">
@@ -433,6 +484,7 @@
     let codeHistory = [];
     let chatLog = [];
     let timerInterval = null;
+    let isRequesting = false; // 중복 요청 방지 락 플래그
 
     function handleAuth() {
       const id = document.getElementById('authId').value.trim();
@@ -462,7 +514,8 @@
     }
 
     function logout() {
-      if (confirm('로그아웃 하시겠습니까?')) {
+      if (confirm('로그아웃 하시겠습니까? 작업 중인 내용은 자동 저장되어 있습니다.')) {
+        saveCurrentState();
         currentUser = null;
         document.getElementById('loginModal').style.display = 'flex';
       }
@@ -484,6 +537,20 @@
       };
 
       localStorage.setItem(`data_${currentUser}`, JSON.stringify(state));
+    }
+
+    function manualSave() {
+      if (!currentUser) {
+        alert('먼저 로그인을 해주세요.');
+        return;
+      }
+      saveCurrentState();
+      
+      const toast = document.getElementById('saveToast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
     }
 
     function loadUserData() {
@@ -593,6 +660,8 @@
     }
 
     async function generateFromPlan() {
+      if (isRequesting) return;
+
       const problem = document.getElementById('p_problem').value.trim();
       const target = document.getElementById('p_target').value.trim();
       const goal = document.getElementById('p_goal').value.trim();
@@ -617,6 +686,8 @@
     }
 
     async function sendRefinement() {
+      if (isRequesting) return;
+
       const input = document.getElementById('refineInput');
       const text = input.value.trim();
       if (!text) return;
@@ -646,13 +717,26 @@
       const statusTag = document.getElementById('statusTag');
       const buildBtn = document.getElementById('buildBtn');
       const refineBtn = document.getElementById('refineBtn');
+      const refineInput = document.getElementById('refineInput');
+      const rollbackBtn = document.getElementById('rollbackBtn');
       const chatBox = document.getElementById('chatBox');
 
-      let elapsed = 0;
-      statusTag.innerText = `생성 중... (0초)`;
-      statusTag.className = "status-indicator running";
+      // 1. 요청 락 활성화 및 UI 잠금
+      isRequesting = true;
       buildBtn.disabled = true;
       refineBtn.disabled = true;
+      refineInput.disabled = true;
+      rollbackBtn.disabled = true;
+
+      // 2. 기존 타이머 정리 및 0초부터 시작
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      let elapsed = 0;
+      statusTag.innerText = `AI 코딩 중... (0초)`;
+      statusTag.className = "status-indicator running";
 
       timerInterval = setInterval(() => {
         elapsed++;
@@ -691,11 +775,21 @@
         chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">${errMsg}</div>`;
         chatLog.push({ role: "ai", content: errMsg });
       } finally {
-        clearInterval(timerInterval);
+        // 3. 타이머 완전 정지 및 리셋
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+
+        // 4. UI 잠금 해제 및 상태 전환
         statusTag.innerText = "동작 준비 완료";
         statusTag.className = "status-indicator";
         buildBtn.disabled = false;
         refineBtn.disabled = false;
+        refineInput.disabled = false;
+        rollbackBtn.disabled = false;
+        isRequesting = false;
+        
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
