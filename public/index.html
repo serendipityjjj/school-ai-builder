@@ -3,69 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 웹앱 프로토타입 빌더</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-</head>
-<body class="h-screen flex bg-gray-100 overflow-hidden font-sans">
-
-  <!-- 좌측: 대화 및 프롬프트 입력 창 -->
-  <div class="w-1/3 flex flex-col border-r bg-white shadow-lg">
-    <div class="p-4 bg-indigo-600 text-white font-bold text-lg flex items-center justify-between">
-      <span>🚀 AI 웹앱 빌더</span>
-      <span class="text-xs bg-indigo-700 px-2 py-1 rounded">수행평가용</span>
-    </div>
+  <title>AI 웹앱 개발 실습 및 기획 빌더</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #FAF9F5;
+      color: #141413;
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .serif {
+      font-family: 'Noto Serif KR', Georgia, serif;
+    }
     
-    <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3 text-sm">
-      <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-indigo-900">
-        💡 <b>반갑습니다!</b><br>
-        불편함을 해결하기 위해 기획한 웹앱의 <b>목적과 주요 기능</b>을 설명해 주세요.<br>
-        (예: "단어를 외우면 카드가 뒤집히는 영단어 오답노트 앱 만들어줘")
-      </div>
-    </div>
+    /* Header */
+    header {
+      height: 60px;
+      border-bottom: 1px solid #C6C4BA;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #FAF9F5;
+      flex-shrink: 0;
+    }
+    .badge {
+      background-color: #E3DACC;
+      color: #141413;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
 
-    <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
-      <div class="flex gap-2">
-        <input type="text" id="userInput" placeholder="요구사항 또는 수정사항 입력..." 
-               class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-               onkeypress="if(event.key==='Enter') sendMessage()">
-        <button id="sendBtn" onclick="sendMessage()" 
-                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-          전송
+    /* Main Container (2-Column Grid) */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 24px;
+      max-width: 1700px;
+      width: 100%;
+      margin: 0 auto;
+      height: calc(100vh - 60px);
+      padding: 20px 32px;
+    }
+
+    /* Left Plan & Chat Panel */
+    .left-panel {
+      background: #FAF9F5;
+      border: 1px solid #C6C4BA;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid #C6C4BA;
+      background-color: #E3DACC;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #73726C;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: #141413;
+      border-bottom: 2px solid #D97757;
+      background-color: #FAF9F5;
+    }
+
+    /* Content Areas */
+    .tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: none;
+    }
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Plan Form Elements */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #D97757;
+      margin-top: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #E3DACC;
+    }
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #141413;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      background: #FAF9F5;
+      border: 1px solid #C6C4BA;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #141413;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, textarea:focus {
+      border-color: #D97757;
+    }
+    textarea {
+      resize: vertical;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background-color: #141413;
+      color: #FAF9F5;
+      border: 1px solid #141413;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      background-color: #0F0F0E;
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+    .msg {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 92%;
+      word-break: break-word;
+    }
+    .msg.system {
+      background-color: #E3DACC;
+      border: 1px solid #C6C4BA;
+      color: #141413;
+      align-self: flex-start;
+    }
+    .msg.user {
+      background-color: #141413;
+      color: #FAF9F5;
+      align-self: flex-end;
+    }
+    .msg.ai {
+      background-color: #FAF9F5;
+      border: 1px solid #C6C4BA;
+      color: #141413;
+      align-self: flex-start;
+    }
+
+    /* Refine Input Box */
+    .refine-box {
+      border-top: 1px solid #C6C4BA;
+      padding: 12px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .refine-wrapper {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Right Preview Panel */
+    .preview-panel {
+      background: #FAF9F5;
+      border: 1px solid #C6C4BA;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .preview-bar {
+      padding: 12px 20px;
+      border-bottom: 1px solid #C6C4BA;
+      background-color: #E3DACC;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .status-indicator {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background-color: #C6C4BA;
+      font-weight: 600;
+    }
+    .status-indicator.running {
+      background-color: #D97757;
+      color: #FAF9F5;
+    }
+    iframe {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <h1 class="serif" style="font-size: 18px; font-weight: 700;">AI 웹앱 개발 수행평가 빌더</h1>
+      <span class="badge">기획 ➔ 프로토타입 ➔ 개선</span>
+    </div>
+    <div style="font-size: 13px; color: #73726C;">Upstage Solar AI Engine</div>
+  </header>
+
+  <!-- Main View -->
+  <main>
+    <!-- Left: Plan / Modify Panel -->
+    <section class="left-panel">
+      <nav class="tab-bar">
+        <button id="tabPlanBtn" class="tab-btn active" onclick="switchTab('plan')">
+          📝 1. 기획서 작성
+        </button>
+        <button id="tabChatBtn" class="tab-btn" onclick="switchTab('chat')">
+          🔄 2. 수정 및 개선 대화
+        </button>
+      </nav>
+
+      <!-- Tab 1: Structured Plan Form -->
+      <div id="planContent" class="tab-content active">
+        <div class="form-section-title">1. 문제 발견 및 정의 (Problem Definition)</div>
+        <div class="form-group">
+          <label>일상 속 불편한 점 *</label>
+          <input type="text" id="p_problem" placeholder="예: 영단어 암기 시 오답 정리가 번거롭고 시간이 오래 걸림">
+        </div>
+        <div class="form-group">
+          <label>사용자 (Target User) *</label>
+          <input type="text" id="p_target" placeholder="예: 매일 영어 단어를 외우는 중고등학생">
+        </div>
+        <div class="form-group">
+          <label>해결 목표 *</label>
+          <input type="text" id="p_goal" placeholder="예: 단어를 빠르게 입력하고 플래시 카드로 복습할 수 있게 함">
+        </div>
+
+        <div class="form-section-title">2. 웹앱 개요 및 기능 설계 (App Concept)</div>
+        <div class="form-group">
+          <label>웹앱 이름 *</label>
+          <input type="text" id="p_name" placeholder="예: 3초 플래시 단어장">
+        </div>
+        <div class="form-group">
+          <label>주요 기능 목록 (입력, 처리, 출력 등) *</label>
+          <textarea id="p_features" rows="3" placeholder="1) 단어 및 뜻 입력창&#10;2) 카드 뒤집기 및 외움 체크 기능&#10;3) 미암기 단어만 모아보기 필터"></textarea>
+        </div>
+
+        <div class="form-section-title">3. AI 최초 요청 프롬프트 (Prompt Planning)</div>
+        <div class="form-group">
+          <label>AI 빌더 생성 요청문 *</label>
+          <textarea id="p_prompt" rows="3" placeholder="예: 영단어와 뜻을 입력하면 플래시 카드 형태로 보여주고, 카드를 클릭하면 뒤집히며 외움 체크가 가능한 웹앱을 만들어줘."></textarea>
+        </div>
+
+        <button id="buildBtn" class="btn-primary" onclick="generateFromPlan()" style="margin-top: 10px;">
+          🚀 기획서 바탕으로 프로토타입 생성하기
         </button>
       </div>
-    </div>
-  </div>
 
-  <!-- 우측: 실시간 미리보기 화면 -->
-  <div class="w-2/3 flex flex-col bg-gray-200">
-    <div class="p-2 px-4 bg-gray-300 text-xs font-semibold text-gray-700 flex justify-between items-center">
-      <span>🖥️ 실시간 미리보기 (Preview)</span>
-      <span id="status" class="bg-gray-400 text-white px-2 py-0.5 rounded text-[10px]">대기 중</span>
-    </div>
-    <iframe id="previewFrame" sandbox="allow-scripts" class="w-full flex-1 bg-white border-0"></iframe>
-  </div>
+      <!-- Tab 2: Chat & Iteration -->
+      <div id="chatContent" class="tab-content">
+        <div id="chatBox" class="chat-messages">
+          <div class="msg system">
+            💡 <b>프로토타입 생성 후 수정 단계</b><br>
+            오른쪽 화면에서 동작을 테스트해보고, 버튼 위치, 색상, 추가 기능 등 개선하고 싶은 점을 아래에 입력하세요.
+          </div>
+        </div>
+        
+        <div class="refine-box">
+          <div class="refine-wrapper">
+            <textarea id="refineInput" rows="2" placeholder="수정/개선 요청사항 입력 (Enter로 전송)..."></textarea>
+            <button id="refineBtn" class="btn-primary" style="padding: 0 16px;" onclick="sendRefinement()">수정</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Preview Screen -->
+    <section class="preview-panel">
+      <div class="preview-bar">
+        <span class="serif" style="font-weight: 600; font-size: 14px;">🖥️ 실시간 프로토타입 화면</span>
+        <span id="statusTag" class="status-indicator">기획서 작성 대기</span>
+      </div>
+      <iframe id="previewFrame" sandbox="allow-scripts allow-modals"></iframe>
+    </section>
+  </main>
 
   <script>
     const conversationHistory = [];
 
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
+    function switchTab(tab) {
+      document.getElementById('tabPlanBtn').classList.toggle('active', tab === 'plan');
+      document.getElementById('tabChatBtn').classList.toggle('active', tab === 'chat');
+      document.getElementById('planContent').classList.toggle('active', tab === 'plan');
+      document.getElementById('chatContent').classList.toggle('active', tab === 'chat');
+    }
+
+    // 1단계: 기획서 항목 종합 및 최초 생성
+    async function generateFromPlan() {
+      const problem = document.getElementById('p_problem').value.trim();
+      const target = document.getElementById('p_target').value.trim();
+      const goal = document.getElementById('p_goal').value.trim();
+      const name = document.getElementById('p_name').value.trim();
+      const features = document.getElementById('p_features').value.trim();
+      const prompt = document.getElementById('p_prompt').value.trim();
+
+      if (!problem || !name || !features || !prompt) {
+        alert('기획서의 필수 항목들을 모두 작성해 주세요.');
+        return;
+      }
+
+      // 기획서 내용 종합 프롬프트 구성
+      const fullPrompt = `
+[웹앱 기획서]
+- 앱 이름: ${name}
+- 대상 사용자: ${target}
+- 해결하고자 하는 문제: ${problem}
+- 해결 목표: ${goal}
+- 주요 기능:
+${features}
+
+[세부 구현 요청]:
+${prompt}
+
+위 기획서와 요청사항에 맞춰 사용자가 직접 브라우저에서 사용할 수 있는 완전한 단일 웹앱을 구현해줘.`;
+
+      // 대화창으로 전환 및 기록 추가
+      switchTab('chat');
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<div class="msg user"><b>📋 기획서 제출: [${escapeHtml(name)}]</b><br>${escapeHtml(prompt)}</div>`;
+      
+      conversationHistory.length = 0; // 초기화
+      conversationHistory.push({ role: "user", content: fullPrompt });
+
+      await requestAiGeneration();
+    }
+
+    // 2단계: 수정 요청 처리
+    async function sendRefinement() {
+      const input = document.getElementById('refineInput');
       const text = input.value.trim();
       if (!text) return;
 
       const chatBox = document.getElementById('chatBox');
-      const status = document.getElementById('status');
-      const sendBtn = document.getElementById('sendBtn');
-
-      // 사용자 메시지 표시
-      chatBox.innerHTML += `<div class="bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900 ml-4"><b>나:</b> ${escapeHtml(text)}</div>`;
+      chatBox.innerHTML += `<div class="msg user"><b>수정 요청:</b> ${escapeHtml(text)}</div>`;
       input.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
 
       conversationHistory.push({ role: "user", content: text });
-      status.innerText = "생성 중...";
-      status.className = "bg-yellow-500 text-white px-2 py-0.5 rounded text-[10px]";
-      sendBtn.disabled = true;
+      await requestAiGeneration();
+    }
+
+    // Enter 키로 수정 요청 전송
+    document.getElementById('refineInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendRefinement();
+      }
+    });
+
+    // API 통신 공통 함수
+    async function requestAiGeneration() {
+      const statusTag = document.getElementById('statusTag');
+      const buildBtn = document.getElementById('buildBtn');
+      const refineBtn = document.getElementById('refineBtn');
+      const chatBox = document.getElementById('chatBox');
+
+      statusTag.innerText = "프로토타입 생성 중...";
+      statusTag.className = "status-indicator running";
+      buildBtn.disabled = true;
+      refineBtn.disabled = true;
 
       try {
         const res = await fetch('/api/generate', {
@@ -74,33 +440,37 @@
           body: JSON.stringify({ messages: conversationHistory })
         });
 
+        if (!res.ok) {
+          throw new Error('서버 응답 오류 (HTTP ' + res.status + ')');
+        }
+
         const data = await res.json();
+        
         if (data.html) {
-          // 마크다운 백틱 제거 보완
-          let cleanHtml = data.html.replace(/^
-```html/i, '').replace(/^```/i, '').replace(/```$/i, '');
-          
-          // iframe에 렌더링
+          // 백틱 제거
+          let cleanHtml = data.html.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '');
+
+          // iframe 렌더링
           document.getElementById('previewFrame').srcdoc = cleanHtml;
           
-          // AI 대화 히스토리 저장
           conversationHistory.push({ role: "assistant", content: cleanHtml });
-          chatBox.innerHTML += `<div class="bg-green-50 border border-green-200 p-3 rounded-lg text-green-900">✅ 웹앱이 생성/수정되었습니다! 오른쪽 화면에서 직접 테스트해 보세요.</div>`;
+          chatBox.innerHTML += `<div class="msg ai">✅ 프로토타입이 생성/수정되었습니다. 오른쪽 화면에서 테스트해 보세요!</div>`;
         } else {
-          chatBox.innerHTML += `<div class="bg-red-50 border border-red-200 p-3 rounded-lg text-red-900">오류: ${data.error}</div>`;
+          chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">⚠️ 생성 실패: ${escapeHtml(data.error || '응답 오류')}</div>`;
         }
       } catch (err) {
-        chatBox.innerHTML += `<div class="bg-red-50 border border-red-200 p-3 rounded-lg text-red-900">서버 통신 오류가 발생했습니다.</div>`;
+        chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">⚠️ 서버 연결 실패: Vercel 환경변수(API Key) 설정을 확인해 주세요.</div>`;
       } finally {
-        status.innerText = "완료";
-        status.className = "bg-green-600 text-white px-2 py-0.5 rounded text-[10px]";
-        sendBtn.disabled = false;
+        statusTag.innerText = "실행 중 (동작 가능)";
+        statusTag.className = "status-indicator";
+        buildBtn.disabled = false;
+        refineBtn.disabled = false;
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
 
-    function escapeHtml(text) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
   </script>
 </body>
