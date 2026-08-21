@@ -38,7 +38,7 @@
     }
     .serif { font-family: 'Noto Serif KR', Georgia, serif; }
 
-    /* Modal Overlay */
+    /* Login Modal */
     #loginModal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -88,7 +88,7 @@
       gap: 10px;
     }
 
-    /* Save Toast Notification */
+    /* Save Toast */
     #saveToast {
       position: fixed;
       top: 75px;
@@ -111,7 +111,7 @@
       transform: translateY(0);
     }
 
-    /* Main Container (2-Column Grid) */
+    /* Main Grid */
     main {
       flex: 1;
       display: grid;
@@ -277,7 +277,7 @@
     }
     .btn-danger:hover { background-color: var(--color-accent-blush); }
 
-    /* Chat Area */
+    /* Chat Messages */
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -355,7 +355,7 @@
 </head>
 <body>
 
-  <!-- 저장 토스트 -->
+  <!-- 저장 완료 토스트 -->
   <div id="saveToast">💾 작업 내용이 안전하게 저장되었습니다!</div>
 
   <!-- 간이 로그인 모달 -->
@@ -390,7 +390,7 @@
     </div>
   </header>
 
-  <!-- Main Grid -->
+  <!-- Main Container -->
   <main>
     <section class="left-panel">
       <nav class="tab-bar">
@@ -484,7 +484,7 @@
     let codeHistory = [];
     let chatLog = [];
     let timerInterval = null;
-    let isRequesting = false; // 중복 요청 방지 락 플래그
+    let isRequesting = false;
 
     function handleAuth() {
       const id = document.getElementById('authId').value.trim();
@@ -700,7 +700,7 @@
 
       const messages = [
         { role: "assistant", content: currentHtmlCode },
-        { role: "user", content: `기존 코드의 구조를 유지하면서 다음 내용을 반영해 전체 HTML 코드를 완성해줘: ${text}` }
+        { role: "user", content: `기존 코드의 구조와 JS 동작 함수를 유지하면서 다음 내용을 반영해 전체 HTML 코드를 완성해줘: ${text}` }
       ];
 
       await sendToBackend(messages);
@@ -721,14 +721,12 @@
       const rollbackBtn = document.getElementById('rollbackBtn');
       const chatBox = document.getElementById('chatBox');
 
-      // 1. 요청 락 활성화 및 UI 잠금
       isRequesting = true;
       buildBtn.disabled = true;
       refineBtn.disabled = true;
       refineInput.disabled = true;
       rollbackBtn.disabled = true;
 
-      // 2. 기존 타이머 정리 및 0초부터 시작
       if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
@@ -775,13 +773,11 @@
         chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">${errMsg}</div>`;
         chatLog.push({ role: "ai", content: errMsg });
       } finally {
-        // 3. 타이머 완전 정지 및 리셋
         if (timerInterval) {
           clearInterval(timerInterval);
           timerInterval = null;
         }
 
-        // 4. UI 잠금 해제 및 상태 전환
         statusTag.innerText = "동작 준비 완료";
         statusTag.className = "status-indicator";
         buildBtn.disabled = false;
