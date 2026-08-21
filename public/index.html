@@ -6,21 +6,40 @@
   <title>AI 웹앱 개발 실습 및 기획 빌더</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* Design Tokens from anthropic.DESIGN.md */
+    :root {
+      --color-primary-cta-bg: #141413;
+      --color-primary-cta-text: #FAF9F5;
+      --color-accent-terracotta: #D97757;
+      --color-accent-earth: #C6613F;
+      --color-accent-sage: #788C5D;
+      --color-accent-blush: #EBCECE;
+      --color-neutral-0: #141413;
+      --color-neutral-dark: #73726C;
+      --color-neutral-medium: #B0AEA5;
+      --color-neutral-light: #C6C4BA;
+      --color-surface-primary: #FAF9F5;
+      --color-surface-tertiary: #E3DACC;
+      --shadow-hover: rgba(0, 0, 0, 0.01) 0px 2px 2px 0px, rgba(0, 0, 0, 0.02) 0px 4px 4px 0px, rgba(0, 0, 0, 0.04) 0px 16px 24px 0px;
+    }
+
     body {
-      background-color: #FAF9F5;
-      color: #141413;
+      background-color: var(--color-surface-primary);
+      color: var(--color-neutral-0);
       font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
     .serif { font-family: 'Noto Serif KR', Georgia, serif; }
 
-    /* Login Modal */
+    /* Modal (Z-Index 1000) */
     #loginModal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -31,60 +50,62 @@
       z-index: 1000;
     }
     .modal-card {
-      background: #FAF9F5;
-      border: 1px solid #C6C4BA;
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-neutral-light);
       border-radius: 8px;
       padding: 32px;
       width: 420px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-hover);
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    /* Header */
+    /* Header (Z-Index 5) */
     header {
-      height: 60px;
-      border-bottom: 1px solid #C6C4BA;
+      height: 64px;
+      border-bottom: 1px solid var(--color-neutral-light);
       padding: 0 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: #FAF9F5;
+      background-color: var(--color-surface-primary);
       flex-shrink: 0;
+      z-index: 5;
     }
     .badge {
-      background-color: #E3DACC;
-      color: #141413;
+      background-color: var(--color-surface-tertiary);
+      color: var(--color-neutral-0);
       font-size: 12px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 4px;
+      line-height: 17px;
     }
     .user-info {
       font-size: 13px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    /* Main Container (2-Column Grid) */
+    /* Main Container (Max 1600px, 24px Gutter) */
     main {
       flex: 1;
       display: grid;
-      grid-template-columns: 490px 1fr;
+      grid-template-columns: 480px 1fr;
       gap: 24px;
-      max-width: 1700px;
+      max-width: 1600px;
       width: 100%;
       margin: 0 auto;
-      height: calc(100vh - 60px);
-      padding: 16px 32px;
+      height: calc(100vh - 64px);
+      padding: 24px 32px;
     }
 
     /* Left Panel */
     .left-panel {
-      background: #FAF9F5;
-      border: 1px solid #C6C4BA;
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-neutral-light);
       border-radius: 8px;
       display: flex;
       flex-direction: column;
@@ -92,105 +113,122 @@
     }
     .tab-bar {
       display: flex;
-      border-bottom: 1px solid #C6C4BA;
-      background-color: #E3DACC;
+      border-bottom: 1px solid var(--color-neutral-light);
+      background-color: var(--color-surface-tertiary);
       flex-shrink: 0;
     }
     .tab-btn {
       flex: 1;
-      padding: 12px 6px;
+      padding: 14px 10px;
       border: none;
       background: none;
-      font-size: 13px;
+      font-family: 'Noto Serif KR', Georgia, serif;
+      font-size: 14px;
       font-weight: 600;
-      color: #73726C;
+      color: var(--color-neutral-dark);
       cursor: pointer;
       border-bottom: 2px solid transparent;
       transition: all 0.2s;
     }
     .tab-btn.active {
-      color: #141413;
-      border-bottom: 2px solid #D97757;
-      background-color: #FAF9F5;
+      color: var(--color-neutral-0);
+      border-bottom: 2px solid var(--color-accent-terracotta);
+      background-color: var(--color-surface-primary);
     }
 
     /* Content Area */
     .tab-content {
       flex: 1;
       overflow-y: auto;
-      padding: 18px;
+      padding: 24px;
       display: none;
     }
     .tab-content.active {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-section-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #D97757;
-      margin-top: 4px;
+      font-family: 'Noto Serif KR', Georgia, serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-accent-terracotta);
+      margin-top: 8px;
       padding-bottom: 4px;
-      border-bottom: 1px solid #E3DACC;
+      border-bottom: 1px solid var(--color-surface-tertiary);
     }
-    label { font-size: 12px; font-weight: 600; color: #141413; }
+    label { font-size: 12px; font-weight: 400; color: var(--color-neutral-0); line-height: 15px; }
+    
+    /* Inputs */
     input[type="text"], input[type="password"], textarea {
       width: 100%;
-      background: #FAF9F5;
-      border: 1px solid #C6C4BA;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 13px;
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-neutral-light);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
       font-family: inherit;
-      color: #141413;
+      color: var(--color-neutral-0);
+      line-height: 20px;
       outline: none;
+      transition: border-color 0.2s;
     }
-    input:focus, textarea:focus { border-color: #D97757; }
+    input:focus, textarea:focus { border-color: var(--color-accent-terracotta); }
     textarea { resize: vertical; }
 
-    /* Buttons */
+    /* Buttons (anthropic.DESIGN.md Spec) */
     .btn-primary {
-      background-color: #141413;
-      color: #FAF9F5;
-      border: 1px solid #141413;
-      border-radius: 6px;
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 600;
+      background-color: var(--color-primary-cta-bg);
+      color: var(--color-primary-cta-text);
+      border: 1px solid var(--color-primary-cta-bg);
+      border-radius: 8px;
+      padding: 8px 16px;
+      height: 36px;
+      font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
       transition: background-color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .btn-primary:hover { background-color: #0F0F0E; }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-secondary {
-      background-color: #FAF9F5;
-      color: #141413;
-      border: 1px solid #C6C4BA;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
+      background-color: var(--color-surface-primary);
+      color: var(--color-neutral-0);
+      border: 1px solid var(--color-neutral-light);
+      border-radius: 8px;
+      padding: 8px 14px;
+      height: 36px;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-secondary:hover { background-color: #E3DACC; border-color: #141413; }
+    .btn-secondary:hover { 
+      background-color: var(--color-surface-tertiary);
+      border-color: var(--color-neutral-medium);
+      box-shadow: var(--shadow-hover);
+    }
 
     .btn-danger {
-      background-color: #FAF9F5;
-      color: #C6613F;
-      border: 1px solid #C6613F;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
+      background-color: var(--color-surface-primary);
+      color: var(--color-accent-earth);
+      border: 1px solid var(--color-accent-earth);
+      border-radius: 8px;
+      padding: 8px 14px;
+      height: 36px;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-danger:hover { background-color: #EBCECE; }
+    .btn-danger:hover { background-color: var(--color-accent-blush); }
 
     /* Chat Messages */
     .chat-messages {
@@ -201,36 +239,36 @@
       gap: 12px;
     }
     .msg {
-      padding: 10px 14px;
+      padding: 14px 16px;
       border-radius: 8px;
-      font-size: 13px;
-      line-height: 1.5;
-      max-width: 94%;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 92%;
       word-break: break-word;
     }
-    .msg.system { background-color: #E3DACC; border: 1px solid #C6C4BA; }
-    .msg.user { background-color: #141413; color: #FAF9F5; align-self: flex-end; }
-    .msg.ai { background-color: #FAF9F5; border: 1px solid #C6C4BA; align-self: flex-start; }
+    .msg.system { background-color: var(--color-surface-tertiary); border: 1px solid var(--color-neutral-light); }
+    .msg.user { background-color: var(--color-neutral-0); color: var(--color-surface-primary); align-self: flex-end; }
+    .msg.ai { background-color: var(--color-surface-primary); border: 1px solid var(--color-neutral-light); align-self: flex-start; }
     .refine-box {
-      border-top: 1px solid #C6C4BA;
-      padding-top: 10px;
+      border-top: 1px solid var(--color-neutral-light);
+      padding-top: 12px;
       display: flex;
       gap: 8px;
     }
 
     /* Right Preview Panel */
     .preview-panel {
-      background: #FAF9F5;
-      border: 1px solid #C6C4BA;
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-neutral-light);
       border-radius: 8px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
     .preview-bar {
-      padding: 10px 16px;
-      border-bottom: 1px solid #C6C4BA;
-      background-color: #E3DACC;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--color-neutral-light);
+      background-color: var(--color-surface-tertiary);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -243,21 +281,23 @@
     }
     .status-indicator {
       font-size: 12px;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 4px;
-      background-color: #C6C4BA;
+      background-color: var(--color-neutral-light);
+      color: var(--color-neutral-0);
       font-weight: 600;
+      line-height: 17px;
     }
-    .status-indicator.running { background-color: #D97757; color: #FAF9F5; }
+    .status-indicator.running { background-color: var(--color-accent-terracotta); color: #FAF9F5; }
     iframe { flex: 1; width: 100%; height: 100%; border: none; background-color: #FFFFFF; }
     .code-viewer {
       flex: 1;
       width: 100%;
       background-color: #141413;
       color: #FAF9F5;
-      border-radius: 6px;
-      padding: 14px;
-      font-family: 'Courier New', Courier, monospace;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
       font-size: 12px;
       line-height: 1.5;
       border: none;
@@ -268,11 +308,11 @@
 </head>
 <body>
 
-  <!-- 간이 로그인 모달 -->
+  <!-- 1. 간이 로그인 모달 -->
   <div id="loginModal">
     <div class="modal-card">
-      <h2 class="serif" style="font-size: 18px; font-weight: 700;">👤 학생 로그인 / 등록</h2>
-      <p style="font-size: 12px; color: #73726C;">
+      <h2 class="serif" style="font-size: 20px; font-weight: 600;">👤 학생 로그인 / 등록</h2>
+      <p style="font-size: 13px; color: var(--color-neutral-dark); line-height: 1.5;">
         학번과 이름을 등록하면 작성 중인 기획서와 코드가 브라우저에 자동 저장되어 언제든 다시 불러올 수 있습니다.
       </p>
       <div class="form-group">
@@ -283,25 +323,24 @@
         <label>비밀번호 (자유 설정)</label>
         <input type="password" id="authPw" placeholder="비밀번호 입력">
       </div>
-      <button class="btn-primary" onclick="handleAuth()">접속 및 작업 시작</button>
+      <button class="btn-primary" style="width: 100%; height: 40px;" onclick="handleAuth()">접속 및 작업 시작</button>
     </div>
   </div>
 
   <!-- Header -->
   <header>
     <div style="display: flex; align-items: center; gap: 12px;">
-      <h1 class="serif" style="font-size: 18px; font-weight: 700;">AI 웹앱 개발 수행평가 빌더</h1>
+      <h1 class="serif" style="font-size: 20px; font-weight: 600;">AI 웹앱 개발 수행평가 빌더</h1>
       <span class="badge">기획 ➔ 프로토타입 ➔ 버전 복원</span>
     </div>
     <div class="user-info">
-      <span id="currentUserDisplay" style="font-weight: 600;">로그인 필요</span>
+      <span id="currentUserDisplay" style="font-weight: 500;">로그인 필요</span>
       <button class="btn-secondary" onclick="logout()">로그아웃</button>
     </div>
   </header>
 
-  <!-- Main Grid -->
+  <!-- Main View -->
   <main>
-    <!-- Left Panel -->
     <section class="left-panel">
       <nav class="tab-bar">
         <button id="tabPlanBtn" class="tab-btn active" onclick="switchTab('plan')">📝 1. 기획서</button>
@@ -336,16 +375,16 @@
         </div>
         <div class="form-group">
           <label>주요 기능 목록 *</label>
-          <textarea id="p_features" rows="2" placeholder="1) 예산 설정 및 잔액 계산 2) 금액 버튼 클릭 시 즉시 차감 3) 내역 표시" oninput="saveCurrentState()"></textarea>
+          <textarea id="p_features" rows="3" placeholder="1) 예산 설정 및 잔액 계산 2) 금액 버튼 클릭 시 즉시 차감 3) 내역 표시" oninput="saveCurrentState()"></textarea>
         </div>
 
         <div class="form-section-title">3. 최초 AI 생성 요청문</div>
         <div class="form-group">
           <label>프롬프트 *</label>
-          <textarea id="p_prompt" rows="2" placeholder="예: 상단에 예산과 잔액이 보이고, 간편 금액 추가 버튼을 누르면 잔액이 바로 차감되는 가계부 앱 만들어줘." oninput="saveCurrentState()"></textarea>
+          <textarea id="p_prompt" rows="3" placeholder="예: 상단에 예산과 잔액이 보이고, 간편 금액 추가 버튼을 누르면 잔액이 바로 차감되는 가계부 앱 만들어줘." oninput="saveCurrentState()"></textarea>
         </div>
 
-        <button id="buildBtn" class="btn-primary" onclick="generateFromPlan()">🚀 프로토타입 생성하기</button>
+        <button id="buildBtn" class="btn-primary" style="height: 44px; margin-top: 8px;" onclick="generateFromPlan()">🚀 프로토타입 생성하기</button>
       </div>
 
       <!-- 2. 대화 탭 -->
@@ -359,7 +398,7 @@
         
         <div class="refine-box">
           <textarea id="refineInput" rows="2" placeholder="수정 요청사항 입력 (Enter 전송)..."></textarea>
-          <button id="refineBtn" class="btn-primary" style="padding: 0 16px;" onclick="sendRefinement()">수정</button>
+          <button id="refineBtn" class="btn-primary" style="height: auto; padding: 0 20px;" onclick="sendRefinement()">수정</button>
         </div>
       </div>
 
@@ -376,7 +415,7 @@
     <!-- Right Preview Screen -->
     <section class="preview-panel">
       <div class="preview-bar">
-        <span class="serif" style="font-weight: 600; font-size: 14px;">🖥️ 실시간 프로토타입 화면</span>
+        <span class="serif" style="font-weight: 600; font-size: 15px;">🖥️ 실시간 프로토타입 화면</span>
         <div class="preview-actions">
           <button id="rollbackBtn" class="btn-secondary" onclick="rollbackToPreviousVersion()" title="수정 후 버튼이 안 먹힐 때 클릭">
             ⏪ 이전 정상 버전 복원
