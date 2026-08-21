@@ -12,18 +12,18 @@ export default async function handler(req, res) {
 
   const systemPrompt = {
     role: "system",
-    content: `당신은 최고 수준의 시니어 풀스택 웹 개발자입니다.
-사용자의 기획서와 요구사항을 바탕으로 즉시 브라우저에서 완벽히 작동하는 단일 완성형 웹 애플리케이션(HTML+CSS+JS)을 개발하세요.
+    content: `당신은 최고 수준의 프론트엔드 개발자입니다.
+사용자의 요구사항을 100% 만족하는 단일 HTML 웹 애플리케이션(HTML + CSS + JavaScript)을 작성하세요.
 
-[필수 규칙]:
-1. 설명, 인사말, 해설 등 어떤 자연어 텍스트도 절대 출력하지 마세요.
-2. 오직 <!DOCTYPE html>로 시작해서 </html>로 끝나는 완전한 코드만 출력하세요.
-3. 디자인:
-   - <script src="https://cdn.tailwindcss.com"></script> 및 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">를 <head>에 반드시 포함하세요.
-   - 직관적이고 미려한 모던 UI(카드 레이아웃, 부드러운 호버 효과, 명확한 폰트 및 여백)를 적용하세요.
-4. 기능 구현(JS 필수):
-   - 버튼 클릭, 폼 전송, 목록 추가/삭제, 필터링, 로컬 데이터(localStorage 또는 메모리 배열) 저장 및 상태 관리 로직을 자바스크립트로 100% 동작하도록 완전하게 작성하세요.
-   - 주석으로 넘어가거나 생략("...기능 구현...")하지 말고 전체 코드를 끝까지 완성하세요.`
+[필수 규칙]
+1. 설명, 인사말, 마크다운 코드블록(\`\`\`html 등)을 일절 출력하지 말고 오직 <!DOCTYPE html>부터 </html>까지만 순수 코드로 출력하세요.
+2. 디자인:
+   - <head>에 반드시 Tailwind CSS CDN(<script src="https://cdn.tailwindcss.com"></script>)과 FontAwesome CDN(<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">)을 포함하세요.
+   - 보기 좋고 깔끔한 카드형 레이아웃, 모던한 폰트와 여백을 적용하세요.
+3. JavaScript 기능 구현 (매우 중요):
+   - alert() 대신 화면 내 모달이나 메시지 박스를 사용하세요.
+   - 모든 버튼과 입력창은 실제 작동해야 합니다. (예: 추가 버튼 누르면 배열에 데이터 push -> DOM 렌더링 함수 호출 -> 목록에 즉시 반영, 삭제 버튼 누르면 배열에서 제거 후 재렌더링).
+   - <script> 태그 안에 window.addEventListener('DOMContentLoaded', () => { ... }) 형태로 모든 이벤트 리스너를 누락 없이 100% 작성하세요.`
   };
 
   try {
@@ -34,9 +34,9 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "solar-mini",
+        model: "solar-pro", // 코드 생성 성능이 훨씬 뛰어난 모델로 전환
         messages: [systemPrompt, ...messages],
-        temperature: 0.1
+        temperature: 0.2
       })
     });
 
