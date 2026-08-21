@@ -16,21 +16,18 @@ export default async function handler(req, res) {
 
   const systemPrompt = {
     role: "system",
-    content: `당신은 풀스택 웹 개발자입니다. 단일 완성형 HTML(HTML+CSS+JS) 웹앱을 작성하세요.
+    content: `당신은 웹 프로토타입 전문 프론트엔드 개발자입니다.
+반드시 문법 오류가 없는 완벽한 단일 HTML(HTML+CSS+JS) 코드를 작성하세요.
 
-[필수 디자인 규칙]
-- 테마 색상: 배경 #FAF9F5, 텍스트 #141413, 카드배경 #FAF9F5, 보조배경 #E3DACC, 테두리 1px solid #C6C4BA, 포인트 강조 #D97757
-- 모던 카드 UI (border-radius: 8px, padding: 16px~24px)
-- <head> 안에 Tailwind CSS CDN(<script src="https://cdn.tailwindcss.com"></script>) 포함
-
-[동작 기능 규칙 - 가장 중요]
-- 코드가 중간에 끊기지 않도록 군더더기 없는 간결한 코드로 작성하세요.
-- 모든 버튼 클릭(+1,000원, +5,000원, 등록, 삭제 등) 시 화면의 숫자(잔여 예산, 총 지출)가 즉시 계산되어 바뀌도록 자바스크립트를 100% 완성하세요.
-- 이벤트 리스너는 버튼의 onclick 속성(예: onclick="addExpense(1000)") 또는 <script> 태그 안의 함수로 완벽하게 연결하세요.
-
-[출력 형식]
-- 어떤 부가 설명이나 인사말, 마크다운 기호(\`\`\`html)도 출력하지 마세요.
-- 반드시 첫 글자는 <!DOCTYPE html> 이어야 하며, 마지막 글자는 </html> 이어야 합니다.`
+[필수 작성 규칙]
+1. 모든 태그(<div class="...">, <h3 class="...">, <button class="..."> 등)는 여는 꺽쇠와 태그 이름을 절대 생략하지 말고 온전한 HTML 문법으로 작성하세요.
+2. 디자인:
+   - <head>에 <script src="https://cdn.tailwindcss.com"></script> 및 구글 폰트를 포함하세요.
+   - 배경: bg-[#FAF9F5], 기본 텍스트: text-[#141413], 카드 배경: bg-white 또는 bg-[#FAF9F5], 카드 테두리: border border-[#C6C4BA], 둥글기: rounded-lg, 포인트 버튼: bg-[#141413] text-[#FAF9F5] 또는 bg-[#D97757] text-white.
+3. 자바스크립트 기능 (필수):
+   - 모든 버튼에는 onclick="함수명()" 또는 JS 이벤트 리스너를 반드시 연결하여 실제 숫자 계산, 목록 추가/삭제, 상태 변경이 즉각 동작하도록 완성된 <script> 코드를 끝까지 작성하세요.
+4. 출력 형식:
+   - 마크다운 백틱(\`\`\`html)이나 설명, 인사말 없이 오직 <!DOCTYPE html>부터 </html>까지만 출력하세요.`
   };
 
   try {
@@ -44,7 +41,7 @@ export default async function handler(req, res) {
         model: "solar-pro",
         messages: [systemPrompt, ...messages],
         temperature: 0.1,
-        max_tokens: 4000 // 코드가 중간에 잘리지 않도록 토큰 한도를 충분히 확보
+        max_tokens: 3500
       })
     });
 
