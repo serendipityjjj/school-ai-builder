@@ -1,5 +1,5 @@
 {
-  "name": "school-ai-builder",
+  "name": "school-ai-prototype-builder",
   "version": "1.0.0",
   "scripts": {
     "dev": "vercel dev"
