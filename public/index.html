@@ -111,7 +111,7 @@
       transform: translateY(0);
     }
 
-    /* Main Grid */
+    /* Main Container */
     main {
       flex: 1;
       display: grid;
@@ -355,7 +355,6 @@
 </head>
 <body>
 
-  <!-- 저장 완료 토스트 -->
   <div id="saveToast">💾 작업 내용이 안전하게 저장되었습니다!</div>
 
   <!-- 간이 로그인 모달 -->
@@ -674,7 +673,7 @@
         return;
       }
 
-      const promptPayload = `[앱 이름]: ${name}\n[사용자]: ${target}\n[해결 문제]: ${problem}\n[목표]: ${goal}\n[기능]: ${features}\n[요청사항]: ${prompt}\n\n모든 HTML 태그를 온전하게 작성하고 버튼 클릭 시 화면 데이터가 즉시 바뀌도록 JavaScript를 완성해서 작성해줘.`;
+      const promptPayload = `[앱 이름]: ${name}\n[사용자]: ${target}\n[해결 문제]: ${problem}\n[목표]: ${goal}\n[기능]: ${features}\n[요청사항]: ${prompt}\n\n[중요 개발 지시]: 버튼 클릭 시 화면 데이터가 즉시 바뀌도록 <form> 태그 없이 type="button"과 전역 state + render() 패턴으로 완벽히 작동하는 JavaScript 코드를 작성해줘.`;
 
       switchTab('chat');
       const userMsgHtml = `<b>📋 기획서 제출: [${escapeHtml(name)}]</b><br>${escapeHtml(prompt)}`;
@@ -700,7 +699,7 @@
 
       const messages = [
         { role: "assistant", content: currentHtmlCode },
-        { role: "user", content: `기존 코드의 구조와 JS 동작 함수를 유지하면서 다음 내용을 반영해 전체 HTML 코드를 완성해줘: ${text}` }
+        { role: "user", content: `기존 코드의 작동 로직과 Anthropic 스타일을 유지하면서 다음 내용을 반영해줘. 버튼이 반드시 100% 작동하도록 type="button"과 window 객체 함수 바인딩으로 전체 HTML 코드를 다시 완성해줘: ${text}` }
       ];
 
       await sendToBackend(messages);
@@ -762,7 +761,7 @@
           document.getElementById('previewFrame').srcdoc = cleanHtml;
           document.getElementById('codeDisplayArea').value = cleanHtml;
 
-          const aiMsg = `✅ 프로토타입 생성/수정 완료 (${elapsed}초 소요)<br>우측 화면에서 기능을 확인하거나 <b>[3. 코드 복사]</b> 탭에서 코드를 복사하세요. 혹시 버튼이 먹통이면 <b>[⏪ 이전 정상 버전 복원]</b>을 누르세요.`;
+          const aiMsg = `✅ 프로토타입 생성/수정 완료 (${elapsed}초 소요)<br>우측 화면에서 버튼을 눌러 확인해 보세요.`;
           chatBox.innerHTML += `<div class="msg ai">${aiMsg}</div>`;
           chatLog.push({ role: "ai", content: aiMsg });
 
