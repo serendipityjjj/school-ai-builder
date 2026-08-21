@@ -8,11 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: #FAF9F5;
       color: #141413;
@@ -22,11 +18,7 @@
       flex-direction: column;
       overflow: hidden;
     }
-    .serif {
-      font-family: 'Noto Serif KR', Georgia, serif;
-    }
-    
-    /* Header */
+    .serif { font-family: 'Noto Serif KR', Georgia, serif; }
     header {
       height: 60px;
       border-bottom: 1px solid #C6C4BA;
@@ -45,12 +37,10 @@
       padding: 4px 10px;
       border-radius: 4px;
     }
-
-    /* Main Container (2-Column Grid) */
     main {
       flex: 1;
       display: grid;
-      grid-template-columns: 480px 1fr;
+      grid-template-columns: 460px 1fr;
       gap: 24px;
       max-width: 1700px;
       width: 100%;
@@ -58,8 +48,6 @@
       height: calc(100vh - 60px);
       padding: 20px 32px;
     }
-
-    /* Left Plan & Chat Panel */
     .left-panel {
       background: #FAF9F5;
       border: 1px solid #C6C4BA;
@@ -68,8 +56,6 @@
       flex-direction: column;
       overflow: hidden;
     }
-
-    /* Tabs */
     .tab-bar {
       display: flex;
       border-bottom: 1px solid #C6C4BA;
@@ -85,10 +71,6 @@
       font-weight: 600;
       color: #73726C;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
       border-bottom: 2px solid transparent;
       transition: all 0.2s;
     }
@@ -97,8 +79,6 @@
       border-bottom: 2px solid #D97757;
       background-color: #FAF9F5;
     }
-
-    /* Content Areas */
     .tab-content {
       flex: 1;
       overflow-y: auto;
@@ -108,28 +88,18 @@
     .tab-content.active {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
-
-    /* Plan Form Elements */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-section-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: #D97757;
-      margin-top: 8px;
+      margin-top: 6px;
       padding-bottom: 4px;
       border-bottom: 1px solid #E3DACC;
     }
-    label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #141413;
-    }
+    label { font-size: 12px; font-weight: 600; color: #141413; }
     input[type="text"], textarea {
       width: 100%;
       background: #FAF9F5;
@@ -140,16 +110,9 @@
       font-family: inherit;
       color: #141413;
       outline: none;
-      transition: border-color 0.2s;
     }
-    input[type="text"]:focus, textarea:focus {
-      border-color: #D97757;
-    }
-    textarea {
-      resize: vertical;
-    }
-
-    /* Buttons */
+    input[type="text"]:focus, textarea:focus { border-color: #D97757; }
+    textarea { resize: vertical; }
     .btn-primary {
       background-color: #141413;
       color: #FAF9F5;
@@ -160,27 +123,15 @@
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
-    .btn-primary:hover {
-      background-color: #0F0F0E;
-    }
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* Chat Messages */
+    .btn-primary:hover { background-color: #0F0F0E; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .chat-messages {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding-right: 4px;
     }
     .msg {
       padding: 12px 14px;
@@ -190,38 +141,15 @@
       max-width: 92%;
       word-break: break-word;
     }
-    .msg.system {
-      background-color: #E3DACC;
-      border: 1px solid #C6C4BA;
-      color: #141413;
-      align-self: flex-start;
-    }
-    .msg.user {
-      background-color: #141413;
-      color: #FAF9F5;
-      align-self: flex-end;
-    }
-    .msg.ai {
-      background-color: #FAF9F5;
-      border: 1px solid #C6C4BA;
-      color: #141413;
-      align-self: flex-start;
-    }
-
-    /* Refine Input Box */
+    .msg.system { background-color: #E3DACC; border: 1px solid #C6C4BA; }
+    .msg.user { background-color: #141413; color: #FAF9F5; align-self: flex-end; }
+    .msg.ai { background-color: #FAF9F5; border: 1px solid #C6C4BA; align-self: flex-start; }
     .refine-box {
       border-top: 1px solid #C6C4BA;
-      padding: 12px 0 0 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .refine-wrapper {
+      padding-top: 12px;
       display: flex;
       gap: 8px;
     }
-
-    /* Right Preview Panel */
     .preview-panel {
       background: #FAF9F5;
       border: 1px solid #C6C4BA;
@@ -246,112 +174,89 @@
       background-color: #C6C4BA;
       font-weight: 600;
     }
-    .status-indicator.running {
-      background-color: #D97757;
-      color: #FAF9F5;
-    }
-    iframe {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      border: none;
-      background-color: #FFFFFF;
-    }
+    .status-indicator.running { background-color: #D97757; color: #FAF9F5; }
+    iframe { flex: 1; width: 100%; height: 100%; border: none; background-color: #FFFFFF; }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header>
     <div style="display: flex; align-items: center; gap: 12px;">
       <h1 class="serif" style="font-size: 18px; font-weight: 700;">AI 웹앱 개발 수행평가 빌더</h1>
       <span class="badge">기획 ➔ 프로토타입 ➔ 개선</span>
     </div>
-    <div style="font-size: 13px; color: #73726C;">Upstage Solar AI Engine</div>
+    <div style="font-size: 13px; color: #73726C;">Upstage Solar Engine</div>
   </header>
 
-  <!-- Main View -->
   <main>
-    <!-- Left: Plan / Modify Panel -->
     <section class="left-panel">
       <nav class="tab-bar">
-        <button id="tabPlanBtn" class="tab-btn active" onclick="switchTab('plan')">
-          📝 1. 기획서 작성
-        </button>
-        <button id="tabChatBtn" class="tab-btn" onclick="switchTab('chat')">
-          🔄 2. 수정 및 개선 대화
-        </button>
+        <button id="tabPlanBtn" class="tab-btn active" onclick="switchTab('plan')">📝 1. 기획서 작성</button>
+        <button id="tabChatBtn" class="tab-btn" onclick="switchTab('chat')">🔄 2. 수정 및 개선</button>
       </nav>
 
-      <!-- Tab 1: Structured Plan Form -->
+      <!-- 1. 기획서 탭 -->
       <div id="planContent" class="tab-content active">
-        <div class="form-section-title">1. 문제 발견 및 정의 (Problem Definition)</div>
+        <div class="form-section-title">1. 문제 발견 및 정의</div>
         <div class="form-group">
           <label>일상 속 불편한 점 *</label>
-          <input type="text" id="p_problem" placeholder="예: 매일 지출한 용돈을 메모장에 적으면 합계 계산이 안 됨">
+          <input type="text" id="p_problem" placeholder="예: 매일 쓴 용돈을 메모하면 합계 계산이 안 됨">
         </div>
         <div class="form-group">
           <label>사용자 (Target User) *</label>
-          <input type="text" id="p_target" placeholder="예: 용돈을 계획적으로 쓰고 싶은 학생들">
+          <input type="text" id="p_target" placeholder="예: 용돈을 아껴 쓰고 싶은 학생">
         </div>
         <div class="form-group">
           <label>해결 목표 *</label>
-          <input type="text" id="p_goal" placeholder="예: 지출 금액과 항목을 입력하면 총액을 실시간 계산하고 목록 관리">
+          <input type="text" id="p_goal" placeholder="예: 지출 입력 즉시 잔여 예산과 총액을 계산해 보여줌">
         </div>
 
-        <div class="form-section-title">2. 웹앱 개요 및 기능 설계 (App Concept)</div>
+        <div class="form-section-title">2. 웹앱 개요 및 기능 설계</div>
         <div class="form-group">
           <label>웹앱 이름 *</label>
-          <input type="text" id="p_name" placeholder="예: 내 돈을 지켜라 (용돈 가계부)">
+          <input type="text" id="p_name" placeholder="예: 내 돈을 지켜라">
         </div>
         <div class="form-group">
-          <label>주요 기능 목록 (입력, 처리, 출력 등) *</label>
-          <textarea id="p_features" rows="3" placeholder="1) 금액, 카테고리(식비, 문구, 간식 등), 메모 입력&#10;2) 등록 시 지출 목록 카드 추가 및 총 지출 합계 실시간 반영&#10;3) 항목별 삭제 버튼 및 카테고리별 필터링 기능"></textarea>
+          <label>주요 기능 목록 *</label>
+          <textarea id="p_features" rows="2" placeholder="1) 예산 설정 및 잔여 예산 계산 2) 금액 추가 버튼(+1000원, +5000원 등) 클릭 시 즉시 차감 3) 지출 내역 리스트 표시"></textarea>
         </div>
 
-        <div class="form-section-title">3. AI 최초 요청 프롬프트 (Prompt Planning)</div>
+        <div class="form-section-title">3. 최초 AI 생성 요청문</div>
         <div class="form-group">
-          <label>AI 빌더 생성 요청문 *</label>
-          <textarea id="p_prompt" rows="3" placeholder="예: 상단에 총 지출 합계가 크게 보이고, 아래에 금액/카테고리 입력 폼이 있으며, 등록 버튼을 누르면 목록에 즉시 추가되고 삭제도 가능한 직관적인 가계부 웹앱을 만들어줘."></textarea>
+          <label>프롬프트 *</label>
+          <textarea id="p_prompt" rows="2" placeholder="예: 상단에 예산과 잔여 금액이 보이고, 간편 금액 추가 버튼을 누르면 잔액이 바로 차감되어 반영되는 가계부 앱을 만들어줘."></textarea>
         </div>
 
-        <button id="buildBtn" class="btn-primary" onclick="generateFromPlan()" style="margin-top: 10px;">
-          🚀 기획서 바탕으로 프로토타입 생성하기
-        </button>
+        <button id="buildBtn" class="btn-primary" onclick="generateFromPlan()">🚀 프로토타입 생성하기</button>
       </div>
 
-      <!-- Tab 2: Chat & Iteration -->
+      <!-- 2. 대화 탭 -->
       <div id="chatContent" class="tab-content">
         <div id="chatBox" class="chat-messages">
           <div class="msg system">
-            💡 <b>프로토타입 생성 후 수정 단계</b><br>
-            오른쪽 화면에서 직접 값을 입력하고 버튼을 눌러보세요.<br>
-            원하는 디자인이나 추가 기능이 있다면 아래에 요청하여 계속 발전시켜 나갈 수 있습니다.
+            💡 프로토타입을 테스트해보고, 수정하고 싶은 부분을 아래에 입력해 주세요.
           </div>
         </div>
         
         <div class="refine-box">
-          <div class="refine-wrapper">
-            <textarea id="refineInput" rows="2" placeholder="수정/개선 요청사항 입력 (Enter로 전송)..."></textarea>
-            <button id="refineBtn" class="btn-primary" style="padding: 0 16px;" onclick="sendRefinement()">수정</button>
-          </div>
+          <textarea id="refineInput" rows="2" placeholder="수정 요청사항 입력 (Enter 전송)..."></textarea>
+          <button id="refineBtn" class="btn-primary" style="padding: 0 16px;" onclick="sendRefinement()">수정</button>
         </div>
       </div>
     </section>
 
-    <!-- Right: Preview Screen -->
     <section class="preview-panel">
       <div class="preview-bar">
         <span class="serif" style="font-weight: 600; font-size: 14px;">🖥️ 실시간 프로토타입 화면</span>
-        <span id="statusTag" class="status-indicator">기획서 작성 대기</span>
+        <span id="statusTag" class="status-indicator">작성 대기 중</span>
       </div>
-      <!-- 스크립트, 폼 전송, 모달, 동일 출처 허용 sandbox 설정 -->
       <iframe id="previewFrame" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe>
     </section>
   </main>
 
   <script>
-    const conversationHistory = [];
+    let currentHtmlCode = "";
+    let timerInterval = null;
 
     function switchTab(tab) {
       document.getElementById('tabPlanBtn').classList.toggle('active', tab === 'plan');
@@ -360,29 +265,31 @@
       document.getElementById('chatContent').classList.toggle('active', tab === 'chat');
     }
 
-    // 순수 HTML 추출 헬퍼 (마크다운 백틱 및 앞뒤 잡담 문구 제거)
     function extractPureHtml(rawText) {
       if (!rawText) return '';
+      let clean = rawText;
       
-      // 1. <!DOCTYPE html> ~ </html> 추출
-      const match = rawText.match(/<!DOCTYPE[\s\S]*?<\/html>/i);
-      if (match) return match[0];
+      // 마크다운 백틱 제거
+      clean = clean.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
 
-      // 2. <html> ~ </html> 추출
-      const htmlMatch = rawText.match(/<html[\s\S]*?<\/html>/i);
-      if (htmlMatch) return `<!DOCTYPE html>\n${htmlMatch[0]}`;
+      const docTypeIndex = clean.toLowerCase().indexOf('<!doctype html>');
+      if (docTypeIndex !== -1) {
+        clean = clean.substring(docTypeIndex);
+      } else {
+        const htmlIndex = clean.toLowerCase().indexOf('<html');
+        if (htmlIndex !== -1) {
+          clean = '<!DOCTYPE html>\n' + clean.substring(htmlIndex);
+        }
+      }
 
-      // 3. 백틱 제거
-      return rawText.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+      const htmlCloseIndex = clean.toLowerCase().lastIndexOf('</html>');
+      if (htmlCloseIndex !== -1) {
+        clean = clean.substring(0, htmlCloseIndex + 7);
+      }
+
+      return clean;
     }
 
-    // iframe 렌더링 헬퍼
-    function renderToIframe(htmlCode) {
-      const iframe = document.getElementById('previewFrame');
-      iframe.srcdoc = htmlCode;
-    }
-
-    // 1단계: 기획서 바탕으로 최초 생성
     async function generateFromPlan() {
       const problem = document.getElementById('p_problem').value.trim();
       const target = document.getElementById('p_target').value.trim();
@@ -392,35 +299,20 @@
       const prompt = document.getElementById('p_prompt').value.trim();
 
       if (!problem || !name || !features || !prompt) {
-        alert('기획서의 필수 항목들을 모두 작성해 주세요.');
+        alert('필수 입력 항목을 모두 채워주세요.');
         return;
       }
 
-      const fullPrompt = `
-[웹앱 기획서]
-- 앱 이름: ${name}
-- 대상 사용자: ${target}
-- 해결하고자 하는 일상 속 문제: ${problem}
-- 해결 목표: ${goal}
-- 주요 기능 목록:
-${features}
-
-[세부 구현 및 디자인 요청사항]:
-${prompt}
-
-위 기획서를 기반으로 Tailwind CSS CDN을 적용하여 현대적이고 깔끔한 UI를 만들고, 입력 및 등록/삭제 등의 핵심 기능이 JavaScript로 완벽히 동작하는 완성형 단일 HTML 웹앱을 생성해줘.`;
+      const promptPayload = `[앱 이름]: ${name}\n[사용자]: ${target}\n[해결 문제]: ${problem}\n[목표]: ${goal}\n[기능]: ${features}\n[요청사항]: ${prompt}\n\n모든 HTML 태그를 온전하게 작성하고 버튼 클릭 시 화면 데이터가 즉시 바뀌도록 JavaScript를 완성해서 작성해줘.`;
 
       switchTab('chat');
       const chatBox = document.getElementById('chatBox');
       chatBox.innerHTML += `<div class="msg user"><b>📋 기획서 제출: [${escapeHtml(name)}]</b><br>${escapeHtml(prompt)}</div>`;
       
-      conversationHistory.length = 0;
-      conversationHistory.push({ role: "user", content: fullPrompt });
-
-      await requestAiGeneration();
+      const messages = [{ role: "user", content: promptPayload }];
+      await sendToBackend(messages);
     }
 
-    // 2단계: 수정 요청
     async function sendRefinement() {
       const input = document.getElementById('refineInput');
       const text = input.value.trim();
@@ -431,11 +323,14 @@ ${prompt}
       input.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      conversationHistory.push({ role: "user", content: text });
-      await requestAiGeneration();
+      const messages = [
+        { role: "assistant", content: currentHtmlCode },
+        { role: "user", content: `기존 코드의 HTML 태그 문법을 온전히 유지하면서 다음 내용을 반영해 전체 HTML을 다시 완성해줘: ${text}` }
+      ];
+
+      await sendToBackend(messages);
     }
 
-    // Enter 키 전송 이벤트
     document.getElementById('refineInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -443,46 +338,48 @@ ${prompt}
       }
     });
 
-    // AI 생성 통신
-    async function requestAiGeneration() {
+    async function sendToBackend(messages) {
       const statusTag = document.getElementById('statusTag');
       const buildBtn = document.getElementById('buildBtn');
       const refineBtn = document.getElementById('refineBtn');
       const chatBox = document.getElementById('chatBox');
 
-      statusTag.innerText = "프로토타입 생성 중...";
+      let elapsed = 0;
+      statusTag.innerText = `생성 중... (0초)`;
       statusTag.className = "status-indicator running";
       buildBtn.disabled = true;
       refineBtn.disabled = true;
+
+      timerInterval = setInterval(() => {
+        elapsed++;
+        statusTag.innerText = `AI 코딩 중... (${elapsed}초)`;
+      }, 1000);
 
       try {
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: conversationHistory })
+          body: JSON.stringify({ messages })
         });
-
-        if (!res.ok) {
-          throw new Error('서버 응답 오류 (HTTP ' + res.status + ')');
-        }
 
         const data = await res.json();
         
+        if (!res.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
         if (data.html) {
           const cleanHtml = extractPureHtml(data.html);
-
-          // iframe 렌더링
-          renderToIframe(cleanHtml);
+          currentHtmlCode = cleanHtml;
           
-          conversationHistory.push({ role: "assistant", content: cleanHtml });
-          chatBox.innerHTML += `<div class="msg ai">✅ 프로토타입이 생성/수정되었습니다. 오른쪽 화면에서 동작을 테스트해 보세요!</div>`;
-        } else {
-          chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">⚠️ 생성 실패: ${escapeHtml(data.error || '응답 오류')}</div>`;
+          document.getElementById('previewFrame').srcdoc = cleanHtml;
+          chatBox.innerHTML += `<div class="msg ai">✅ 프로토타입 생성이 완료되었습니다! (${elapsed}초 소요) 우측에서 버튼을 눌러 동작을 확인해 보세요.</div>`;
         }
       } catch (err) {
-        chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">⚠️ 서버 통신 실패: 백엔드 연결 상태를 확인해 주세요.</div>`;
+        chatBox.innerHTML += `<div class="msg ai" style="color: #D97757;">⚠️ 오류: ${escapeHtml(err.message)}</div>`;
       } finally {
-        statusTag.innerText = "실행 중 (동작 가능)";
+        clearInterval(timerInterval);
+        statusTag.innerText = "동작 준비 완료";
         statusTag.className = "status-indicator";
         buildBtn.disabled = false;
         refineBtn.disabled = false;
@@ -491,7 +388,7 @@ ${prompt}
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
   </script>
 </body>
