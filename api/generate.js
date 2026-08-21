@@ -16,18 +16,21 @@ export default async function handler(req, res) {
 
   const systemPrompt = {
     role: "system",
-    content: `당신은 웹 프로토타입 전문 프론트엔드 개발자입니다.
-반드시 문법 오류가 없는 완벽한 단일 HTML(HTML+CSS+JS) 코드를 작성하세요.
+    content: `당신은 최고 속도로 동작하는 고성능 웹 프로토타입 개발자입니다.
+지연(Lag) 없이 버튼 클릭 즉시 0.01초 만에 화면이 반응하는 단일 완성형 HTML(HTML+CSS+JS)을 작성하세요.
 
-[필수 작성 규칙]
-1. 모든 태그(<div class="...">, <h3 class="...">, <button class="..."> 등)는 여는 꺽쇠와 태그 이름을 절대 생략하지 말고 온전한 HTML 문법으로 작성하세요.
-2. 디자인:
-   - <head>에 <script src="https://cdn.tailwindcss.com"></script> 및 구글 폰트를 포함하세요.
-   - 배경: bg-[#FAF9F5], 기본 텍스트: text-[#141413], 카드 배경: bg-white 또는 bg-[#FAF9F5], 카드 테두리: border border-[#C6C4BA], 둥글기: rounded-lg, 포인트 버튼: bg-[#141413] text-[#FAF9F5] 또는 bg-[#D97757] text-white.
-3. 자바스크립트 기능 (필수):
-   - 모든 버튼에는 onclick="함수명()" 또는 JS 이벤트 리스너를 반드시 연결하여 실제 숫자 계산, 목록 추가/삭제, 상태 변경이 즉각 동작하도록 완성된 <script> 코드를 끝까지 작성하세요.
-4. 출력 형식:
-   - 마크다운 백틱(\`\`\`html)이나 설명, 인사말 없이 오직 <!DOCTYPE html>부터 </html>까지만 출력하세요.`
+[디자인 - Anthropic 클린 테마]
+- 배경: #FAF9F5, 텍스트: #141413, 보조배경: #E3DACC, 테두리: 1px solid #C6C4BA, 포인트색: #D97757[cite: 1]
+- 둥글기: border-radius: 8px[cite: 1]
+- Tailwind CSS CDN(<script src="https://cdn.tailwindcss.com"></script>)을 포함하되, 무거운 외부 라이브러리는 추가하지 마세요.
+
+[초고속 반응형 JS 핵심 규칙 - 필수]
+- 전역 상태 객체(state = { budget: 600000, spent: 0, items: [] })를 정의하세요.
+- 모든 버튼 클릭 함수(예: addAmount, addRecord, deleteItem)는 실행 즉시 state 값을 갱신하고, render() 함수를 한 번만 호출하여 DOM을 밀리초(ms) 단위로 즉각 변경하세요.
+- 비동기 지연이나 복잡한 연산 없이 순수 바닐라 자바스크립트로 간결하게 작성하세요.
+
+[출력 형식]
+- 어떤 마크다운 기호(\`\`\`html)나 설명 없이 오직 <!DOCTYPE html>로 시작해 </html>로 끝나는 코드만 출력하세요.`
   };
 
   try {
@@ -40,8 +43,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "solar-pro",
         messages: [systemPrompt, ...messages],
-        temperature: 0.1,
-        max_tokens: 3500
+        temperature: 0.0, // 가장 빠르고 결정론적인 코드 생성
+        max_tokens: 2500  // 군더더기 코드를 줄여 생성 속도 2배 향상
       })
     });
 
